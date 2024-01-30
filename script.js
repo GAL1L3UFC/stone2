@@ -5,6 +5,9 @@ const config = {
   transitionDuration: 3000,
   prize: 4560000,
   digits: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+  balance: 10000000,
+  prizeToDeduct: 5000000,
+  prizeToAdd: 700000,
 };
 
 const USD = new Intl.NumberFormat("en-US", {
@@ -72,8 +75,7 @@ const animate = () => {
     track.style.transition = `transform ${config.transitionDuration}ms cubic-bezier(.1,.67,0,1)`;
     track.style.transform = `translate(0rem, ${activeDigit * -10}rem)`;
   });
-}
-
+};
 
 const resetTrackPosition = (track) => {
   track.style.transitionDuration = "0ms";
@@ -93,9 +95,19 @@ window.onload = () => {
 };
 
 const handleRedo = () => {
-  config.prize = generateRandomPrize();
-  resetAnimation();
-  animate();
+  if (config.balance >= config.prizeToDeduct) {
+    config.balance -= config.prizeToDeduct;
+    config.prize = generateRandomPrize();
+
+    if (config.balance >= config.prizeToAdd) {
+      config.balance += config.prizeToAdd;
+    }
+
+    resetAnimation();
+    animate();
+  } else {
+    alert("Saldo insuficiente. Recarregue sua conta!");
+  }
 };
 
 const updateTheme = (theme) => {
